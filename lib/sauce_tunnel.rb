@@ -15,6 +15,7 @@ module SauceTunnel
     end
 
     def start
+      # Wrap establishing Tunnel in Mutex since the Tunnel class is not thread safe.
       @mutex.synchronize do
         @tunnel ||= begin
           Tunnel.new(**@config).tap do |tunnel|

@@ -18,10 +18,6 @@ module SauceTunnel
     def connect
       return if @wait_thread # don't start twice
 
-      unless system(Shellwords.join(["command", "-v", sc_path]))
-        raise ConnectionError, "unable to find the `sc` command line utility make sure it is installed and in PATH or set `sc_path`"
-      end
-
       @stdin, @stdout, @stderr, @wait_thread = Open3.popen3(Shellwords.join([sc_path] + [sc_args].flatten))
 
       @read_thread = Thread.new do
