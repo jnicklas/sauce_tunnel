@@ -5,13 +5,27 @@ module SauceTunnel
   class Error < StandardError; end
   class ConnectionError < Error; end
 
-  def self.start(**options)
-    Tunnel.new(**options).tap do |tunnel|
-      at_exit do
-        tunnel.terminate
+  @config = {}
+  @mutex = Mutex.new
+  @tunnel = nil
+
+  class << self
+    def config(**config)
+      @config = config;
+    end
+
+    def start
+      @mutex.synchronize do
+        @tunnel ||= begin
+          Tunnel.new(**@config).tap do |tunnel|
+            at_exit do
+              tunnel.terminate
+            end
+            tunnel.connect
+            tunnel.await
+          end
+        end
       end
-      tunnel.connect
-      tunnel.await
     end
   end
 end
