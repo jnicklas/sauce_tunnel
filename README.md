@@ -47,11 +47,11 @@ SauceTunnel.start
 
 Available options are:
 
-*sc_path:* Location of the `sc` command line utility, defaults to assuming `sc` is in PATH
-*sc_args:* Additional args to pass to `sc`
-*quiet:* If `true` no output will be printed to `stdout`.
-*timeout:* Timeout for establishing the connection to SauceLabs
-*shutdown_timeout:* Timeout for shutting down the tunnel.
+- **sc_path:** Location of the `sc` command line utility, defaults to assuming `sc` is in PATH
+- **sc_args:** Additional args to pass to `sc`
+- **quiet:** If `true` no output will be printed to `stdout`.
+- **timeout:** Timeout for establishing the connection to SauceLabs
+- **shutdown_timeout:** Timeout for shutting down the tunnel.
 
 You can also instantiate and use a Tunnel manually, but this is not recommended.
 
