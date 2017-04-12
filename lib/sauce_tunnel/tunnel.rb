@@ -26,10 +26,6 @@ module SauceTunnel
           @queue.push(true) if line =~ /sauce connect is up/i
         end
       end
-
-      at_exit do
-        terminate
-      end
     end
 
     def await
