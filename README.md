@@ -1,8 +1,7 @@
 # SauceTunnel
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/sauce_tunnel`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+This is a Ruby gem which makes it easy to establish a proxy tunnel to
+SauceLabs, via their `sc` command line utility.
 
 ## Installation
 
@@ -14,28 +13,55 @@ gem 'sauce_tunnel'
 
 And then execute:
 
-    $ bundle
+```
+$ bundle
+```
 
-Or install it yourself as:
+You'll also want to install the `sc` command line utility. On macOS you
+can do this via homebrew casks, like this:
 
-    $ gem install sauce_tunnel
+```
+brew cask install sauce-connect
+```
+
+On other platforms, please see: <https://wiki.saucelabs.com/display/DOCS/Sauce+Connect+Proxy>.
 
 ## Usage
 
-TODO: Write usage instructions here
+You can configure and start a global tunnel like this:
 
-## Development
+``` ruby
+SauceTunnel.start
+```
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+This will block and wait until the tunnel is established. It is safe to call
+this method lazily even from multiple threads when you need the tunnel.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and tags, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+If you need to configure the Tunnel, call `config` before calling start like
+this:
 
-## Contributing
+``` ruby
+SauceTunnel.config(sc_args: ["-B", "all"])
+SauceTunnel.start
+```
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/sauce_tunnel. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+Available options are:
 
+*sc_path:* Location of the `sc` command line utility, defaults to assuming `sc` is in PATH
+*sc_args:* Additional args to pass to `sc`
+*quiet:* If `true` no output will be printed to `stdout`.
+*timeout:* Timeout for establishing the connection to SauceLabs
+*shutdown_timeout:* Timeout for shutting down the tunnel.
+
+You can also instantiate and use a Tunnel manually, but this is not recommended.
+
+``` ruby
+tunnel = SauceTunnel::Tunnel.new(sc_args: ["-B", "all"])
+tunnel.connect # establish connection in the background
+tunnel.await # wait for tunnel to start
+tunnel.terminate # wait for tunnel to shut down
+```
 
 ## License
 
 The gem is available as open source under the terms of the [MIT License](http://opensource.org/licenses/MIT).
-
